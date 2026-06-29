@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+knowledge/agents/
+evolution_log/
+data/
+node_modules/
+.next/
+.vercel/
