@@ -284,3 +284,36 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# Web Intelligence standalone commands added to menu
+def web_search_menu(web):
+    print(f"""
+{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🌐 WEB INTELLIGENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  [w1] Search anything live
+  [w2] Latest news on topic
+  [w3] Market research
+  [w4] Competitor analysis
+  [w5] Price check
+  [w0] Back
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}""")
+
+    c = input(f"{Fore.CYAN}Web → {Style.RESET_ALL}").strip()
+
+    if c == "w1":
+        q = input("Search query: ").strip()
+        return web.search(q)
+    elif c == "w2":
+        t = input("Topic for news: ").strip()
+        return web.news(t)
+    elif c == "w3":
+        i = input("Industry to research: ").strip()
+        return web.market(i)
+    elif c == "w4":
+        co = input("Competitor name: ").strip()
+        return web.competitor(co)
+    elif c == "w5":
+        s = input("Service to price check: ").strip()
+        return web.price_check(s)
+    return None
