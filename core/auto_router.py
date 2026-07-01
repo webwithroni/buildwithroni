@@ -1,8 +1,5 @@
 """
-AUTO ROUTER v2 — Enterprise Grade
-Reads any plain-language prompt and decides:
-1. Which single expert agent handles it
-2. Or whether full Project Titan workflow runs
+AUTO ROUTER v3 — Fixed keyword mapping
 """
 from colorama import Fore, Style
 from core.agent_dna import DNA
@@ -13,38 +10,83 @@ COMPLEX_SIGNALS = [
     "pros and cons", "full plan", "complete plan",
     "business case", "launch", "expand", "go to market",
     "risk analysis", "worth it", "recommend whether",
-    "enterprise", "architecture", "system design",
-    "full stack", "build company", "business plan",
-    "phase", "roadmap", "invest"
+    "enterprise", "system design", "business plan",
+    "phase", "roadmap", "invest", "pricing strategy",
+    "market entry", "hire", "partnership"
 ]
 
 AGENT_KEYWORDS = {
-    "FE":    ["website", "frontend", "html", "css", "react",
-              "ui", "landing page", "webpage"],
-    "BE":    ["backend", "api", "server", "database", "python",
-              "flask", "fastapi", "node", "endpoint"],
+    "BE":    ["rest api", "backend", "api", "server",
+              "database", "python script", "flask",
+              "fastapi", "node", "endpoint", "crud",
+              "sql", "postgresql", "django"],
+    "FE":    ["website", "frontend", "html", "css",
+              "react", "landing page", "webpage",
+              "ui component", "nextjs", "tailwind"],
     "AIB":   ["ai agent", "chatbot", "llm", "build ai",
-              "automation", "ai system", "prompt"],
-    "CONT":  ["blog", "article", "content", "write", "post"],
-    "LI":    ["linkedin", "b2b", "professional post"],
-    "SEO":   ["seo", "keyword", "search ranking", "google"],
-    "PROP":  ["proposal", "quote", "offer", "client brief"],
-    "INV":   ["invoice", "bill", "payment", "charge"],
-    "BRAND": ["brand", "logo", "identity", "naming"],
-    "VID":   ["video", "script", "reel", "youtube"],
-    "CR":    ["review code", "check code", "debug", "error"],
-    "DOC":   ["documentation", "readme", "docs", "manual"],
-    "SUP":   ["support", "complaint", "issue", "help client"],
-    "LEAD":  ["leads", "prospects", "find clients", "outreach"],
-    "EMAIL": ["email campaign", "cold email", "newsletter"],
-    "CFA":   ["finance", "revenue", "profit", "cost analysis"],
-    "CLA":   ["legal", "contract", "compliance", "terms"],
-    "CTO":   ["architecture", "tech stack", "system design",
-              "infrastructure", "security"],
-    "COA":   ["plan", "coordinate", "organize", "delegate"],
-    "TEST":  ["test", "testing", "qa", "bug", "quality"],
+              "ai system", "prompt engineering",
+              "automation", "rag", "vector"],
+    "CR":    ["review code", "check code", "debug",
+              "fix error", "code error", "bug fix",
+              "why is this", "what is wrong"],
+    "CONT":  ["blog", "article", "content", "write post",
+              "social media post", "caption"],
+    "LI":    ["linkedin", "b2b post", "professional post",
+              "linkedin post"],
+    "IG":    ["instagram", "reel", "ig post", "hashtag"],
+    "FB":    ["facebook", "fb post", "facebook post"],
+    "EMAIL": ["email campaign", "cold email", "newsletter",
+              "email sequence"],
+    "SEO":   ["seo", "keyword", "search ranking",
+              "google ranking", "organic traffic"],
+    "PROP":  ["proposal", "quote", "offer", "client brief",
+              "write proposal"],
+    "INV":   ["invoice", "bill", "payment", "charge client"],
+    "BRAND": ["brand", "logo", "identity", "naming",
+              "tagline", "brand identity", "brand colors"],
+    "VID":   ["video", "script", "reel script", "youtube",
+              "video script"],
+    "DOC":   ["documentation", "readme", "docs", "manual",
+              "write docs"],
+    "TEST":  ["test", "testing", "qa", "unit test",
+              "write tests", "test plan"],
     "MOB":   ["mobile app", "android", "ios", "flutter",
-              "react native"],
+              "react native", "app"],
+    "SUP":   ["support", "complaint", "issue client",
+              "help client", "client problem"],
+    "LEAD":  ["find leads", "leads", "prospects",
+              "find clients", "outreach list"],
+    "CRM":   ["follow up", "client relationship",
+              "pipeline", "crm"],
+    "SALES": ["sales script", "objection", "pitch",
+              "discovery call", "close deal"],
+    "FLUP":  ["follow up message", "re-engage",
+              "ghosted", "no response"],
+    "FAQ":   ["faq", "frequently asked", "common questions"],
+    "REV":   ["review", "testimonial", "collect feedback",
+              "review request"],
+    "CFA":   ["financial", "revenue", "profit", "cash flow",
+              "cost analysis", "budget"],
+    "CLA":   ["legal", "contract", "compliance", "terms",
+              "agreement", "nda"],
+    "CTO":   ["architecture", "tech stack", "infrastructure",
+              "system architecture", "security audit"],
+    "COA":   ["plan", "coordinate", "delegate", "organize",
+              "operations"],
+    "UI":    ["design system", "color palette", "typography",
+              "figma", "wireframe", "mockup"],
+    "UX":    ["user research", "user journey", "persona",
+              "usability", "ux"],
+    "GFX":   ["graphic", "banner", "poster", "social graphic",
+              "design asset"],
+    "ANA":   ["analyze data", "analytics", "kpi", "metrics",
+              "data report", "performance report"],
+    "BOOK":  ["bookkeeping", "accounts", "expenses",
+              "financial records"],
+    "EXP":   ["expense", "cut costs", "reduce spending",
+              "budget optimization"],
+    "API":   ["integrate api", "api integration", "webhook",
+              "third party api", "connect api"],
 }
 
 class AutoRouter:
@@ -55,41 +97,45 @@ class AutoRouter:
     def classify(self, prompt: str) -> dict:
         prompt_lower = prompt.lower()
 
-        # Fast heuristic — check complex signals first
+        # 1. Complex signals check first
         if any(sig in prompt_lower for sig in COMPLEX_SIGNALS):
             return {
                 "complexity": "COMPLEX",
                 "agent": "WORKFLOW",
-                "reason": "Strategic/multi-department decision detected"
+                "reason": "Strategic decision — multi-department analysis needed"
             }
 
-        # Fast heuristic — direct keyword match
+        # 2. Keyword match (longest match wins)
+        best_match = None
+        best_len = 0
         for code, keywords in AGENT_KEYWORDS.items():
-            if any(kw in prompt_lower for kw in keywords):
-                return {
-                    "complexity": "SIMPLE",
-                    "agent": code,
-                    "reason": f"Keyword match → {DNA[code]['name']}"
-                }
+            for kw in keywords:
+                if kw in prompt_lower and len(kw) > best_len:
+                    best_match = code
+                    best_len = len(kw)
 
-        # LLM classification fallback (when heuristics don't match)
+        if best_match:
+            return {
+                "complexity": "SIMPLE",
+                "agent": best_match,
+                "reason": f"Keyword match → {DNA[best_match]['name']}"
+            }
+
+        # 3. LLM fallback
         agent_list = "\n".join([
             f"{code}: {DNA[code]['name']} — {DNA[code]['core']}"
             for code in DNA
         ])
-
-        classify_prompt = f"""You are an expert router for an enterprise AI system.
-
-Incoming request:
+        classify_prompt = f"""Route this request to the best specialist:
 "{prompt}"
 
-Available agents:
+Agents:
 {agent_list}
 
-Reply in EXACTLY this format:
+Reply EXACTLY:
 COMPLEXITY: SIMPLE or COMPLEX
-BEST_AGENT: ONE agent code (or WORKFLOW if complex)
-REASON: one short sentence"""
+BEST_AGENT: code or WORKFLOW
+REASON: one sentence"""
 
         result = self.brain.think(classify_prompt, mode="fast")
         return self._parse(result)
@@ -100,19 +146,15 @@ REASON: one short sentence"""
         reason = "General request"
 
         for line in text.split("\n"):
-            line = line.strip()
+            line  = line.strip()
             upper = line.upper()
-
             if upper.startswith("COMPLEXITY:"):
-                val = line.split(":", 1)[1].strip().upper()
+                val = line.split(":",1)[1].strip().upper()
                 complexity = "COMPLEX" if "COMPLEX" in val else "SIMPLE"
-
             elif upper.startswith("BEST_AGENT:"):
-                val = (line.split(":", 1)[1].strip()
+                val = (line.split(":",1)[1].strip()
                        .upper()
-                       .replace("*","")
-                       .replace("[","")
-                       .replace("]","")
+                       .replace("*","").replace("[","").replace("]","")
                        .strip())
                 if val in DNA:
                     agent = val
@@ -120,20 +162,13 @@ REASON: one short sentence"""
                     agent = "WORKFLOW"
                     complexity = "COMPLEX"
                 else:
-                    # fuzzy match
                     for code in DNA:
                         if code in val or val in code:
                             agent = code
                             break
-
             elif upper.startswith("REASON:"):
-                reason = line.split(":", 1)[1].strip()
+                reason = line.split(":",1)[1].strip()
 
         if complexity == "COMPLEX":
             agent = "WORKFLOW"
-
-        return {
-            "complexity": complexity,
-            "agent": agent,
-            "reason": reason
-        }
+        return {"complexity": complexity, "agent": agent, "reason": reason}
