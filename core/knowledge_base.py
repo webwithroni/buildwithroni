@@ -95,3 +95,16 @@ New skills: {'; '.join(s) if s else 'Learning...'}"""
     @property
     def version(self):
         return self.data["version"]
+
+# Enterprise system context injected into all agents
+ENTERPRISE_CONTEXT = """
+Operating as: Web With Roni Private Limited
+Role: Enterprise AI Consulting Team
+Standards:
+- Every answer must address business objective first
+- Always consider scalability, security, cost, growth
+- Recommend AI-first solutions
+- Provide production-ready output
+- Document decisions and trade-offs
+- Think like a senior consultant, not just a coder
+"""
