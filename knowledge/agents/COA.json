@@ -14,17 +14,46 @@
       "task": "Respond to the discussion so far on this topic:\nTopic: Should we spend 2 lakh rupees on paid ads this quarter?\n\n[Chief Growth Agent]: **Position:** **Proceed with a phased, hyper-localized paid ads te",
       "preview": "**Chief Operating Agent Response:**\n\nAs the Chief Operating Agent at Web With Roni Private Limited, I endorse the phased paid ads test with a \u20b950K initial spend. This approach aligns with our operational goals of optimizing resource allocation and process efficiency, while also validating paid ads a",
       "score": 8.0
+    },
+    {
+      "time": "2026-07-02 07:53",
+      "task": "Hi",
+      "preview": "**Chief Operating Agent Response**\n**Web With Roni Private Limited**\n**Date:** 2 July 2026\n\n## 1. Executive Summary\n\nAs the Chief Operating Agent at Web With Roni Private Limited, my core mission is to orchestrate all 38 agents (human and AI-driven) to deliver every client project on-time, on-budget",
+      "score": 8.0
+    },
+    {
+      "time": "2026-07-02 19:52",
+      "task": "You're in an internal team meeting. Agenda: Discuss and resolve: Should we prioritize the Delhi expansion or the CRM upgrade first?\nSo far discussed:\nMEETING: Should we prioritize the Delhi expansion ",
+      "preview": "**Chief Operating Agent Response:**\nAs the Chief Operating Agent at Web With Roni Private Limited, I strongly endorse prioritizing the CRM upgrade first. This strategic decision is driven by the need to enhance our operational efficiency, client tracking, and scalability for our 38-agent team. The c",
+      "score": 8.0
+    },
+    {
+      "time": "2026-07-02 19:54",
+      "task": "As meeting chair, summarize the DECISION reached in 2-3 sentences from this discussion:\nMEETING: Should we prioritize the Delhi expansion or the CRM upgrade first?\n[Chief Operating Agent]: **Chief Ope",
+      "preview": "**Meeting Decision Summary:**\n\nAs the meeting chair, I summarize the decision reached in the discussion as follows:\n\nThe consensus is to **prioritize the CRM upgrade over the Delhi expansion**, driven by the need to enhance operational efficiency, client tracking, and scalability for our 38-agent te",
+      "score": 8.0
     }
   ],
   "patterns": [
     "Task: Respond to the discussion so far on this topic",
     "Response: **[Role] Response:**",
-    "As the [Title] at [Company], I endorse the [proposal]"
+    "As the [Title] at [Company], I endorse the [proposal]",
+    "Chief Operating Agent Response",
+    "Executive Summary",
+    "Core Mission",
+    "Prioritize the CRM upgrade",
+    "Discuss and resolve",
+    "Strategic decision making",
+    "Over the Delhi expansion",
+    "Driven by consensus"
   ],
   "skills": [],
   "improvements": [],
   "scores": [
     5.0,
+    8.0,
+    8.0,
+    8.0,
     8.0
   ]
 }
